@@ -12,6 +12,12 @@ public class Player : MonoBehaviour
     [Header("Pulo")]
     public float forcaPulo = 6f;
 
+    bool ehchao; //armazenar se ta no chao
+    public Transform checkChao;// armazena a posição do objeto que vai verificar se ta no chão
+    public float raioCheckChao=0.2f; //raio do objeto que vai verificar se ta no chão
+    public LayerMask oqueEchao; //armazenar quais objetos são considerados chão
+
+
     private void Awake()
     {
         rig= GetComponent<Rigidbody2D>();
@@ -37,9 +43,20 @@ public class Player : MonoBehaviour
     {
         mover= controle.Player.Move.ReadValue<Vector2>();
 
-        if(controle.Player.Jump.WasPressedThisFrame())
+        //verificar se ta no chão
+        ehchao = Physics2D.OverlapCircle(checkChao.position, raioCheckChao, oqueEchao);
+
+        if (controle.Player.Jump.WasPressedThisFrame() && ehchao)
         {
             pular();
+        }
+         // instruções para virar
+        if (mover.x > 0.01f)
+        {
+            transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+        }else if(mover.x < -0.01f)
+        {
+            transform.rotation = Quaternion.Euler(0f, 180f, 0f);
         }
     }
     void FixedUpdate()

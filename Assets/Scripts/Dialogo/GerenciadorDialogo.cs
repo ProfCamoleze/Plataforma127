@@ -14,6 +14,9 @@ public class GerenciadorDialogo : MonoBehaviour
     // Número da fala atual.
     private int indiceFala;
 
+    [Header("Player")]
+    public Player player;
+
     private void Start()
     {
         // Começa com a janela escondida.
@@ -26,6 +29,9 @@ public class GerenciadorDialogo : MonoBehaviour
         dialogoAtual = dialogo;
         // Começa pela primeira fala.
         indiceFala = 0;
+
+        player.BloquearMovimento();
+
         // Abre a janela.
         painelDialogo.SetActive(true);
         // Mostra a primeira fala.
@@ -57,6 +63,7 @@ public class GerenciadorDialogo : MonoBehaviour
     }
     public void FecharDialogo()
     {
+        player.LiberarMovimento();
         // Esconde a janela.
         painelDialogo.SetActive(false);
     }

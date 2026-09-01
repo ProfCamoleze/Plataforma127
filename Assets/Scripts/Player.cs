@@ -9,6 +9,8 @@ public class Player : MonoBehaviour
     Vector2 mover;
     PlayerContole controle;
 
+    private bool podeMover = true;
+
     Animator anime;
 
     [Header("Pulo")]
@@ -44,32 +46,35 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        mover= controle.Player.Move.ReadValue<Vector2>();
-        animar();
-        //verificar se ta no chão
-        ehchao = Physics2D.OverlapCircle(checkChao.position, raioCheckChao, oqueEchao);
+        if (podeMover)
+        {
+            mover = controle.Player.Move.ReadValue<Vector2>();
+            animar();
+            //verificar se ta no chão
+            ehchao = Physics2D.OverlapCircle(checkChao.position, raioCheckChao, oqueEchao);
 
-        if (controle.Player.Jump.WasPressedThisFrame() &&  qtdPulos >1) //adicionar a variavel qtdPulo linha 16
-        {
-            qtdPulos--;
-            pular();
-           
-        } else if(ehchao)
-        {
-            qtdPulos= 2f;
+            if (controle.Player.Jump.WasPressedThisFrame() && qtdPulos > 1) //adicionar a variavel qtdPulo linha 16
+            {
+                qtdPulos--;
+                pular();
+
+            }
+            else if (ehchao)
+            {
+                qtdPulos = 2f;
+            }
+
+            // instruções para virar
+            if (mover.x > 0.01f)
+            {
+                transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+            }
+            else if (mover.x < -0.01f)
+            {
+                transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+            }
+
         }
-
-        // instruções para virar
-        if (mover.x > 0.01f)
-        {
-            transform.rotation = Quaternion.Euler(0f, 0f, 0f);
-        }
-        else if (mover.x < -0.01f)
-        {
-            transform.rotation = Quaternion.Euler(0f, 180f, 0f);
-        }
-
-
     }
     void FixedUpdate()
     {
@@ -104,5 +109,21 @@ public class Player : MonoBehaviour
             }
         }
 
+    }
+
+    public void BloquearMovimento()
+    {
+        // Impede novas leituras de movimento.
+        podeMover = false;
+        // Limpa a última direção recebida do controle.
+        mover = Vector2.zero;
+        // Interrompe o movimento horizontal atual.
+        rig.linearVelocityX = 0f;
+    }
+
+    public void LiberarMovimento()
+    {
+        // Permite novas leituras de movimento.
+        podeMover = true;
     }
 }
